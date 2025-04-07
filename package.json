@@ -1,0 +1,13 @@
+{
+  "name": "ryskv12",
+  "version": "1.0.0",
+  "description": "Rysk V12 client",
+  "main": "index.js",
+  "repository": "https://github.com/rysk-finance/ryskV12_ts.git",
+  "author": "thundering-silence <25010047+thundering-silence@users.noreply.github.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "typescript": "^5.8.3"
+  }
+}
