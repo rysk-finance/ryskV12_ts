@@ -118,13 +118,7 @@ class Rysk {
   public balances(channelId: string, account: HexString): void {
     spawn(
       this._cli_path,
-      [
-        "balances",
-        "--channel_id",
-        channelId,
-        "--account",
-        account
-      ],
+      ["balances", "--channel_id", channelId, "--account", account],
       { stdio: "inherit" }
     );
   }
@@ -160,18 +154,12 @@ class Rysk {
   public positions(channelId: string, account: HexString): void {
     spawn(
       this._cli_path,
-      [
-        "positions",
-        "--channel_id",
-        channelId,
-        "--account",
-        account
-      ],
+      ["positions", "--channel_id", channelId, "--account", account],
       { stdio: "inherit" }
     );
   }
 
-  public quote(channelId: string, reply_id: string, quote: Quote): void {
+  public quote(channelId: string, rfqId: string, quote: Quote): void {
     /**
      * Send a quote through the given channel_id.
      * The response will be readable through the channel output.
@@ -182,8 +170,8 @@ class Rysk {
         "quote",
         "--channel_id",
         channelId,
-        "--reply_id",
-        reply_id,
+        "--rfq_id",
+        rfqId,
         "--asset_address",
         quote.assetAddress,
         "--chain_id",
