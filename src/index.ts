@@ -1,5 +1,11 @@
 import { spawn } from "child_process";
-import { JSONResponseHandler, JSONRPCResponse, Quote, Transfer } from "./types";
+import {
+  HexString,
+  JSONResponseHandler,
+  JSONRPCResponse,
+  Quote,
+  Transfer,
+} from "./types";
 
 export enum Env {
   LOCAL = 0,
@@ -40,7 +46,7 @@ class Rysk {
     return `${ENV_CONFIGS[this._env].base_url}${uri}`;
   }
 
-  public newConnection(
+  public connect(
     channelId: string,
     uri: string,
     handler: JSONResponseHandler
@@ -91,7 +97,7 @@ class Rysk {
     }
   }
 
-  public newApproval(channelId: string, chainId: number, amount: string): void {
+  public approve(channelId: string, chainId: number, amount: string): void {
     spawn(
       this._cli_path,
       [
@@ -109,7 +115,21 @@ class Rysk {
     );
   }
 
-  public newTransferRequest(channelId: string, transfer: Transfer): void {
+  public balances(channelId: string, account: HexString): void {
+    spawn(
+      this._cli_path,
+      [
+        "balances",
+        "--channel_id",
+        channelId,
+        "--account",
+        account
+      ],
+      { stdio: "inherit" }
+    );
+  }
+
+  public transfer(channelId: string, transfer: Transfer): void {
     /**
      * Send a transfer request through the given channel_id.
      * The response will be readable through the channel output.
@@ -137,7 +157,21 @@ class Rysk {
     );
   }
 
-  public newQuote(channelId: string, reply_id: string, quote: Quote): void {
+  public positions(channelId: string, account: HexString): void {
+    spawn(
+      this._cli_path,
+      [
+        "positions",
+        "--channel_id",
+        channelId,
+        "--account",
+        account
+      ],
+      { stdio: "inherit" }
+    );
+  }
+
+  public quote(channelId: string, reply_id: string, quote: Quote): void {
     /**
      * Send a quote through the given channel_id.
      * The response will be readable through the channel output.
