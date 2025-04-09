@@ -22,8 +22,8 @@ const ryskSDK = new Rysk(env, privateKey, "/path/to/ryskV12"); // Optional CLI p
 const channelId = "my-unique-channel-id";
 const uri = "/ws/<assetAddress>"; // Example websocket endpoint
 
-const responseHandler: JSONResponseHandler = (response: JSONRPCResponse) => {
-  console.log("Received response:", response);
+const rfqHandler: = (payload: string) => {
+  console.log("Received response:", payload);
   // Handle the JSON RPC response here
   // This is purposely left very generic so you can have your own implementation.
   // A few options are:
@@ -31,9 +31,9 @@ const responseHandler: JSONResponseHandler = (response: JSONRPCResponse) => {
   // - Message Queue
   // - Immediate Callback
   // - Streams
-}
+};
 
-ryskSDK.connect(channelId, uri, responseHandler);
+ryskSDK.execute(ryskSDK.connectArgs(channelId, uri), rfqHandler);
 ```
 
 ### Approve USDC spending
@@ -43,7 +43,7 @@ const approvalChannelId = "approval-channel";
 const chainId = 84532;
 const amount = "1000000";
 
-ryskSDK.approve(approvalChannelId, chainId, amount);
+ryskSDK.execute(ryskSDK.approveArgs(approvalChannelId, chainId, amount));
 ```
 
 ### List USDC Balances
@@ -52,7 +52,7 @@ ryskSDK.approve(approvalChannelId, chainId, amount);
 const makerChannel = "maker-channel";
 const account = "0xabc";
 
-ryskSDK.balances(makerChannel, account);
+ryskSDK.execute(ryskSDK.balancesArgs(makerChannel, account));
 ```
 
 ### Deposit / Withdraw
@@ -67,7 +67,7 @@ const transferDetails: Transfer = {
   nonce: "some-unique-nonce",
 };
 
-ryskSDK.transfer(makerChannel, transferDetails);
+ryskSDK.execute(ryskSDK.transferArgs(makerChannel, transferDetails));
 ```
 
 ### List Positions
@@ -76,7 +76,7 @@ ryskSDK.transfer(makerChannel, transferDetails);
 const makerChannel = "maker-channel";
 const account = "0xabc";
 
-ryskSDK.positions(makerChannel, account);
+ryskSDK.execute(ryskSDK.positionsArgs(makerChannel, account));
 ```
 
 ### Send a Quote
@@ -98,5 +98,5 @@ const quoteDetails: Quote = {
   validUntil: 1678886460,
 };
 
-ryskSDK.quote(makerChannel, request_id, quoteDetails);
+ryskSDK.execute(ryskSDK.quoteArgs(makerChannel, request_id, quoteDetails));
 ```

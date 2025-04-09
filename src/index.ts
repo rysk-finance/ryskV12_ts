@@ -1,11 +1,5 @@
 import { spawn } from "child_process";
-import {
-  HexString,
-  JSONResponseHandler,
-  JSONRPCResponse,
-  Quote,
-  Transfer,
-} from "./types";
+import { Quote, Transfer } from "./types";
 
 export enum Env {
   LOCAL = 0,
@@ -46,159 +40,107 @@ class Rysk {
     return `${ENV_CONFIGS[this._env].base_url}${uri}`;
   }
 
-  public connect(
-    channelId: string,
-    uri: string,
-    handler: JSONResponseHandler
-  ): void {
-    /**
-     * Instantiate a new websocket connection with a given id.
-     */
-    try {
-      const command = `${
-        this._cli_path
-      } connect --channel_id ${channelId} --url ${this._url(uri)}`;
-      const process = spawn(command, [], {
-        shell: true,
-        stdio: ["pipe", "pipe", "pipe"], // stdin, stdout, stderr
-      });
-
-      if (process.stdout) {
-        process.stdout.on("data", (data: string) => {
-          const lines = data.toString().trim().split("\n");
-          for (const line of lines) {
-            if (line) {
-              try {
-                const res: JSONRPCResponse = JSON.parse(line);
-                handler(res);
-              } catch (e) {
-                console.error("Error parsing JSON:", e, line);
-              }
-            }
-          }
-        });
-      }
-
-      if (process.stderr) {
-        process.stderr.on("data", (data: string) => {
-          console.error(`CLI error: ${data}`);
-        });
-      }
-
-      process.on("close", (code) => {
-        console.log(`CLI process exited with code ${code}`);
-      });
-
-      process.on("error", (err) => {
-        console.error(`CLI process error: ${err}`);
-      });
-    } catch (e: any) {
-      console.error(`Exception raised ${e}`);
+  public execute(
+    args: Array<string> = [],
+    stdOutHandler: (data: string) => any | Promise<any> = console.log,
+    stdErrHandler: (data: string) => any | Promise<any> = console.error,
+    closeHandler: (code: number) => any | Promise<any> = console.log,
+    errHandler: (err: Error) => any | Promise<any> = (err) => {
+      throw err;
     }
+  ) {
+    const proc = spawn(this._cli_path, args, {
+      shell: true,
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    if (proc.stdout) {
+      process.stdout.on("data", stdOutHandler);
+    }
+    if (proc.stderr) {
+      proc.stderr.on("data", stdErrHandler);
+    }
+    proc.on("close", closeHandler);
+    proc.on("error", errHandler);
   }
 
-  public approve(channelId: string, chainId: number, amount: string): void {
-    spawn(
-      this._cli_path,
-      [
-        "approve",
-        "--channel_id",
-        channelId,
-        "--chain_id",
-        chainId.toString(),
-        "--amount",
-        amount,
-        "--private_key",
-        this._private_key,
-      ],
-      { stdio: "inherit" }
-    );
+  public connectArgs(channelId: string, uri: string) {
+    return ["connect", "--channel_id", channelId, "--url", this._url(uri)];
   }
 
-  public balances(channelId: string, account: HexString): void {
-    spawn(
-      this._cli_path,
-      ["balances", "--channel_id", channelId, "--account", account],
-      { stdio: "inherit" }
-    );
+  public approveArgs(channelId: string, chainId: number, amount: string) {
+    return [
+      "approve",
+      "--channel_id",
+      channelId,
+      "--chain_id",
+      chainId.toString(),
+      "--amount",
+      amount,
+      "--private_key",
+      this._private_key,
+    ];
   }
 
-  public transfer(channelId: string, transfer: Transfer): void {
-    /**
-     * Send a transfer request through the given channel_id.
-     * The response will be readable through the channel output.
-     */
-    spawn(
-      this._cli_path,
-      [
-        "transfer",
-        "--channel_id",
-        channelId,
-        "--chain_id",
-        transfer.chain_id.toString(),
-        "--asset",
-        transfer.asset,
-        "--amount",
-        transfer.amout,
-        "--is_deposit",
-        transfer.is_deposit ? "true" : "false",
-        "--nonce",
-        transfer.nonce,
-        "--private_key",
-        this._private_key,
-      ],
-      { stdio: "inherit" }
-    );
+  public balancesArgs(channelId: string, account: string) {
+    return ["balances", "--channel_id", channelId, "--account", account];
   }
 
-  public positions(channelId: string, account: HexString): void {
-    spawn(
-      this._cli_path,
-      ["positions", "--channel_id", channelId, "--account", account],
-      { stdio: "inherit" }
-    );
+  public transferArgs(channelId: string, transfer: Transfer) {
+    return [
+      "transfer",
+      "--channel_id",
+      channelId,
+      "--chain_id",
+      transfer.chain_id.toString(),
+      "--asset",
+      transfer.asset,
+      "--amount",
+      transfer.amout,
+      "--is_deposit",
+      transfer.is_deposit ? "true" : "false",
+      "--nonce",
+      transfer.nonce,
+      "--private_key",
+      this._private_key,
+    ];
   }
 
-  public quote(channelId: string, rfqId: string, quote: Quote): void {
-    /**
-     * Send a quote through the given channel_id.
-     * The response will be readable through the channel output.
-     */
-    spawn(
-      this._cli_path,
-      [
-        "quote",
-        "--channel_id",
-        channelId,
-        "--rfq_id",
-        rfqId,
-        "--asset_address",
-        quote.assetAddress,
-        "--chain_id",
-        quote.chainId.toString(),
-        "--expiry",
-        quote.expiry.toString(),
-        "--is_put",
-        quote.isPut ? "true" : "false",
-        "--is_taker_buy",
-        quote.isTakerBuy ? "true" : "false",
-        "--maker",
-        quote.maker,
-        "--nonce",
-        quote.nonce,
-        "--price",
-        quote.price,
-        "--quantity",
-        quote.quantity,
-        "--strike",
-        quote.strike,
-        "--valid_until",
-        quote.validUntil.toString(),
-        "--private_key",
-        this._private_key,
-      ],
-      { stdio: "inherit" }
-    );
+  public positionsArgs(channelId: string, account: string) {
+    return ["positions", "--channel_id", channelId, "--account", account];
+  }
+
+  public quoteArgs(channelId: string, rfqId: string, quote: Quote) {
+    return [
+      "quote",
+      "--channel_id",
+      channelId,
+      "--rfq_id",
+      rfqId,
+      "--asset_address",
+      quote.assetAddress,
+      "--chain_id",
+      quote.chainId.toString(),
+      "--expiry",
+      quote.expiry.toString(),
+      "--is_put",
+      quote.isPut ? "true" : "false",
+      "--is_taker_buy",
+      quote.isTakerBuy ? "true" : "false",
+      "--maker",
+      quote.maker,
+      "--nonce",
+      quote.nonce,
+      "--price",
+      quote.price,
+      "--quantity",
+      quote.quantity,
+      "--strike",
+      quote.strike,
+      "--valid_until",
+      quote.validUntil.toString(),
+      "--private_key",
+      this._private_key,
+    ];
   }
 }
 
