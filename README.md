@@ -39,11 +39,11 @@ ryskSDK.execute(ryskSDK.connectArgs(channelId, uri), rfqHandler);
 ### Approve USDC spending
 
 ```ts
-const approvalChannelId = "approval-channel";
 const chainId = 84532;
 const amount = "1000000";
+const rpcURL = "https://rpc..."
 
-ryskSDK.execute(ryskSDK.approveArgs(approvalChannelId, chainId, amount));
+ryskSDK.execute(ryskSDK.approveArgs(chainId, amount, rpcURL));
 ```
 
 ### List USDC Balances

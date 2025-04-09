@@ -44,7 +44,7 @@ class Rysk {
     args: Array<string> = [],
     onMessage: (data: string) => any | Promise<any> = console.log,
     onError: (data: string) => any | Promise<any> = console.error,
-    onClose: (code: number) => any | Promise<any> = console.log,
+    onClose: (code: number) => any | Promise<any> = console.log
   ) {
     const proc = spawn(this._cli_path, args, {
       shell: true,
@@ -64,15 +64,15 @@ class Rysk {
     return ["connect", "--channel_id", channelId, "--url", this._url(uri)];
   }
 
-  public approveArgs(channelId: string, chainId: number, amount: string) {
+  public approveArgs(chainId: number, amount: string, rpcURL: string) {
     return [
       "approve",
-      "--channel_id",
-      channelId,
       "--chain_id",
       chainId.toString(),
       "--amount",
       amount,
+      "--rpc_url",
+      rpcURL,
       "--private_key",
       this._private_key,
     ];
