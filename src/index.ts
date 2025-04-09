@@ -42,25 +42,22 @@ class Rysk {
 
   public execute(
     args: Array<string> = [],
-    stdOutHandler: (data: string) => any | Promise<any> = console.log,
-    stdErrHandler: (data: string) => any | Promise<any> = console.error,
-    closeHandler: (code: number) => any | Promise<any> = console.log,
-    errHandler: (err: Error) => any | Promise<any> = (err) => {
-      throw err;
-    }
+    onMessage: (data: string) => any | Promise<any> = console.log,
+    onError: (data: string) => any | Promise<any> = console.error,
+    onClose: (code: number) => any | Promise<any> = console.log,
   ) {
     const proc = spawn(this._cli_path, args, {
       shell: true,
       stdio: ["pipe", "pipe", "pipe"],
     });
     if (proc.stdout) {
-      process.stdout.on("data", stdOutHandler);
+      process.stdout.on("data", onMessage);
     }
     if (proc.stderr) {
-      proc.stderr.on("data", stdErrHandler);
+      proc.stderr.on("data", onMessage);
     }
-    proc.on("close", closeHandler);
-    proc.on("error", errHandler);
+    proc.on("close", onClose);
+    proc.on("error", onError);
   }
 
   public connectArgs(channelId: string, uri: string) {
@@ -96,8 +93,7 @@ class Rysk {
       transfer.asset,
       "--amount",
       transfer.amout,
-      "--is_deposit",
-      transfer.is_deposit ? "true" : "false",
+      transfer.is_deposit ? "--is_deposit" : "",
       "--nonce",
       transfer.nonce,
       "--private_key",
@@ -122,10 +118,8 @@ class Rysk {
       quote.chainId.toString(),
       "--expiry",
       quote.expiry.toString(),
-      "--is_put",
-      quote.isPut ? "true" : "false",
-      "--is_taker_buy",
-      quote.isTakerBuy ? "true" : "false",
+      quote.isPut ? "--is_put" : "",
+      quote.isTakerBuy ? "--is_taker_buy" : "",
       "--maker",
       quote.maker,
       "--nonce",
