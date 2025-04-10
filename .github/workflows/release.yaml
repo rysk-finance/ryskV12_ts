@@ -33,6 +33,8 @@ jobs:
         run: |
           CURRENT_VERSION=$(jq -r .version package.json)
           sed -i "s/\"version\": \"$CURRENT_VERSION\"/\"version\": \"${{ steps.tag_name_input.outputs.TAG_NAME }}\"/" package.json
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions Bot"
           git add package.json
           git commit -m 'vbump'
           git push
