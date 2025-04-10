@@ -1,0 +1,57 @@
+name: Tag and Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Tag name (e.g., v1.2.3)"
+        required: true
+        type: string
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Yarn install
+        run: yarn install --frozen-lockfile
+
+      - name: Bump package version
+        id: version_bump
+        run: |
+          CURRENT_VERSION=$(jq -r .version package.json)
+          sed -i "s/\"version\": \"$CURRENT_VERSION\"/\"version\": \"${{ steps.tag_name_input.outputs.TAG_NAME }}\"/" package.json
+          git add package.json
+          git commit -m 'vbump'
+          git push
+
+      - name: Build package
+        run: yarn build
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag_name_input.outputs.TAG_NAME }}
+          release_name: ${{ steps.tag_name_input.outputs.TAG_NAME }}
+          draft: false
+          prerelease: false
+
+      - name: Publish to NPM
+        run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

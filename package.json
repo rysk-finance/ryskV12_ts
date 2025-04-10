@@ -2,12 +2,31 @@
   "name": "ryskv12",
   "version": "1.0.0",
   "description": "Rysk V12 client",
-  "main": "index.js",
+  "keywords": [
+    "rysk",
+    "api",
+    "crypto",
+    "cryptocurrency",
+    "options",
+    "exchange",
+    "EVM",
+    "derivatives"
+  ],
   "repository": "https://github.com/rysk-finance/ryskV12_ts.git",
-  "author": "thundering-silence <25010047+thundering-silence@users.noreply.github.com>",
+  "homepage": "https://rysk.finance/",
+  "bugs": "https://github.com/rysk-finance/ryskV12_ts/issues",
+  "author": {
+    "email": "jack@rysk.finance",
+    "name": "thundering-silence"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.14.0",
     "typescript": "^5.8.3"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "npx tsc",
+    "upgrade": "yarn upgrade-interactive --latest"
   }
 }
