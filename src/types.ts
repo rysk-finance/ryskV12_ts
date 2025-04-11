@@ -21,7 +21,6 @@ export type Quote = {
   nonce: string;
   price: string;
   quantity: string;
-  signature: HexString;
   strike: string;
   validUntil: number;
 };
