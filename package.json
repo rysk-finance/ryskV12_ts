@@ -1,6 +1,6 @@
 {
   "name": "ryskv12",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Rysk V12 client",
   "repository": "https://github.com/rysk-finance/ryskV12_ts.git",
   "homepage": "https://rysk.finance/",
@@ -20,18 +20,13 @@
     "EVM",
     "derivatives"
   ],
-  "entrypoint": "dist/index.js",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
   "files": [
     "dist",
     "README.md",
     "LICENSE"
   ],
   "exports": {
-    ".": {
-      "import": "./dist/indes.js"
-    }
+    ".": "./dist/index.js"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
