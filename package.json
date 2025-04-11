@@ -23,10 +23,12 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "package.json"
   ],
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./models": "./dist/models.js"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

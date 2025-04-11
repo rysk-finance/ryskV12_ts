@@ -1,5 +1,5 @@
 import { spawn } from "child_process";
-import { Quote, Transfer } from "./types";
+import { Quote, Transfer } from "./models";
 
 export enum Env {
   LOCAL = 0,
