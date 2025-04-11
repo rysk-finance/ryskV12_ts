@@ -1,7 +1,15 @@
 {
   "name": "ryskv12",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Rysk V12 client",
+  "repository": "https://github.com/rysk-finance/ryskV12_ts.git",
+  "homepage": "https://rysk.finance/",
+  "bugs": "https://github.com/rysk-finance/ryskV12_ts/issues",
+  "author": {
+    "email": "jack@rysk.finance",
+    "name": "thundering-silence"
+  },
+  "license": "MIT",
   "keywords": [
     "rysk",
     "api",
@@ -12,14 +20,19 @@
     "EVM",
     "derivatives"
   ],
-  "repository": "https://github.com/rysk-finance/ryskV12_ts.git",
-  "homepage": "https://rysk.finance/",
-  "bugs": "https://github.com/rysk-finance/ryskV12_ts/issues",
-  "author": {
-    "email": "jack@rysk.finance",
-    "name": "thundering-silence"
+  "entrypoint": "dist/index.js",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/indes.js"
+    }
   },
-  "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.14.0",
     "dotenv": "^16.5.0",
