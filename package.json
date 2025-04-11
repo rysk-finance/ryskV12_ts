@@ -1,6 +1,6 @@
 {
   "name": "ryskv12",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Rysk V12 client",
   "repository": "https://github.com/rysk-finance/ryskV12_ts.git",
   "homepage": "https://rysk.finance/",
@@ -21,8 +21,8 @@
     "derivatives"
   ],
   "entrypoint": "dist/index.js",
-  "main": "./lib/index.js",
-  "module": "./lib/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "files": [
     "dist",
     "README.md",
