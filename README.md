@@ -1,6 +1,6 @@
 # Rysk V12 Typescript client
 
-Typescript wrapper for ryskv12-cli
+Node wrapper for ryskV12-cli
 
 ## Setup
 
@@ -8,32 +8,43 @@ Navigate to https://github.com/rysk-finance/ryskV12-cli/releases and download th
 
 ## Run
 
+### Core `execute` method
+
+The `execute` method spawns a subprocess and returns it.
+You can then attach listeners to the process to capture `stdout`, `stderr` and events like "close" and "error".
+
+```ts
+// ...
+  public execute(args: Array<string> = []): ChildProcessWithoutNullStreams {
+    return spawn(this._cli_path, args, {
+      shell: true,
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+  }
+//...
+```
+
 ### Instantiation
 
 ```ts
-const privateKey = "YOUR_PRIVATE_KEY"; // Replace with your actual private key
-const env = Env.TESTNET; // Choose your environment: Env.LOCAL, Env.TESTNET, Env.MAINNET
+const privateKey = "0xYOUR_PRIVATE_KEY";
+const env = Env.TESTNET; // Env.LOCAL | Env.TESTNET | Env.MAINNET
 const ryskSDK = new Rysk(env, privateKey, "/path/to/ryskV12"); // Optional CLI path
 ```
 
 ### Create a Connection
 
 ```ts
-const channelId = "my-unique-channel-id";
-const uri = "/ws/<assetAddress>"; // Example websocket endpoint
+const rfqChannel = "my-rfq-channel-id";
+const rfqURI = "rfqs/<assetAddress>"; // Example websocket endpoint
 
-const rfqHandler: = (payload: string) => {
-  console.log("Received response:", payload);
-  // Handle the JSON RPC response here
-  // This is purposely left very generic so you can have your own implementation.
-  // A few options are:
-  // - Subscriber Pattern
-  // - Message Queue
-  // - Immediate Callback
-  // - Streams
-};
+const rfqProc = ryskSDK.execute(ryskSDK.connectArgs(rfqChannel, rfqURI));
 
-ryskSDK.execute(ryskSDK.connectArgs(channelId, uri), rfqHandler);
+
+const makerChannel = "maker-channel"
+const makerURI = "maker"
+
+const makerProc = ryskSDK.execute(ryskSDK.connectArgs(makerChannel, makerURI));
 ```
 
 ### Approve USDC spending
@@ -43,7 +54,7 @@ const chainId = 84532;
 const amount = "1000000";
 const rpcURL = "https://rpc..."
 
-ryskSDK.execute(ryskSDK.approveArgs(chainId, amount, rpcURL));
+const proc = ryskSDK.execute(ryskSDK.approveArgs(chainId, amount, rpcURL));
 ```
 
 ### List USDC Balances
@@ -52,7 +63,7 @@ ryskSDK.execute(ryskSDK.approveArgs(chainId, amount, rpcURL));
 const makerChannel = "maker-channel";
 const account = "0xabc";
 
-ryskSDK.execute(ryskSDK.balancesArgs(makerChannel, account));
+const proc = ryskSDK.execute(ryskSDK.balancesArgs(makerChannel, account));
 ```
 
 ### Deposit / Withdraw
@@ -67,7 +78,7 @@ const transferDetails: Transfer = {
   nonce: "some-unique-nonce",
 };
 
-ryskSDK.execute(ryskSDK.transferArgs(makerChannel, transferDetails));
+const proc = ryskSDK.execute(ryskSDK.transferArgs(makerChannel, transferDetails));
 ```
 
 ### List Positions
@@ -76,7 +87,7 @@ ryskSDK.execute(ryskSDK.transferArgs(makerChannel, transferDetails));
 const makerChannel = "maker-channel";
 const account = "0xabc";
 
-ryskSDK.execute(ryskSDK.positionsArgs(makerChannel, account));
+const proc = ryskSDK.execute(ryskSDK.positionsArgs(makerChannel, account));
 ```
 
 ### Send a Quote
@@ -98,5 +109,5 @@ const quoteDetails: Quote = {
   validUntil: 1678886460,
 };
 
-ryskSDK.execute(ryskSDK.quoteArgs(makerChannel, request_id, quoteDetails));
+const proc = ryskSDK.execute(ryskSDK.quoteArgs(makerChannel, request_id, quoteDetails));
 ```
