@@ -40,24 +40,11 @@ class Rysk {
     return `${ENV_CONFIGS[this._env].base_url}${uri}`;
   }
 
-  public execute(
-    args: Array<string> = [],
-    onMessage: (data: string) => any | Promise<any> = console.log,
-    onError: (data: string) => any | Promise<any> = console.error,
-    onClose: (code: number) => any | Promise<any> = console.log
-  ) {
-    const proc = spawn(this._cli_path, args, {
+  public execute(args: Array<string> = []) {
+    return spawn(this._cli_path, args, {
       shell: true,
       stdio: ["pipe", "pipe", "pipe"],
     });
-    if (proc.stdout) {
-      process.stdout.on("data", onMessage);
-    }
-    if (proc.stderr) {
-      proc.stderr.on("data", onMessage);
-    }
-    proc.on("close", onClose);
-    proc.on("error", onError);
   }
 
   public connectArgs(channelId: string, uri: string) {
@@ -112,7 +99,7 @@ class Rysk {
       channelId,
       "--rfq_id",
       rfqId,
-      "--asset_address",
+      "--asset",
       quote.assetAddress,
       "--chain_id",
       quote.chainId.toString(),

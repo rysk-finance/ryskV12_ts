@@ -45,7 +45,7 @@ export type JSONRPCResponse = {
   jsonrpc: string;
   id: string;
   method: string;
-  params: Record<string, any> | Array<any> | string;
+  result: Record<string, any> | Array<any> | string;
 };
 
 export type JSONResponseHandler = (res: JSONRPCResponse) => void;
@@ -106,10 +106,9 @@ export function isJSONRPCResponse(obj: any): obj is JSONRPCResponse {
     obj !== null &&
     typeof obj.jsonrpc === "string" &&
     typeof obj.id === "string" &&
-    typeof obj.method === "string" &&
-    (typeof obj.params === "object" ||
-      Array.isArray(obj.params) ||
-      typeof obj.params === "string")
+    (typeof obj.result === "object" ||
+      Array.isArray(obj.result) ||
+      typeof obj.result === "string")
   );
 }
 
