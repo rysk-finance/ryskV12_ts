@@ -94,7 +94,7 @@ export function isTransfer(obj: any): obj is Transfer {
     typeof obj.amout === "string" &&
     typeof obj.asset === "string" &&
     typeof obj.chain_id === "number" &&
-    typeof obj.is_deposit === "boolean" &&
+    typeof obj.isDeposit === "boolean" &&
     typeof obj.nonce === "string"
   );
 }

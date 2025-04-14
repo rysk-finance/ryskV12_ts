@@ -51,6 +51,10 @@ class Rysk {
     return ["connect", "--channel_id", channelId, "--url", this._url(uri)];
   }
 
+  public disconnectArgs(channelId: string) {
+    return ["disconnect", "--channel_id", channelId]
+  }
+
   public approveArgs(chainId: number, amount: string, rpcURL: string) {
     return [
       "approve",
