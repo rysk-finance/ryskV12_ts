@@ -40,11 +40,18 @@ const rfqURI = "rfqs/<assetAddress>"; // Example websocket endpoint
 
 const rfqProc = ryskSDK.execute(ryskSDK.connectArgs(rfqChannel, rfqURI));
 
-
-const makerChannel = "maker-channel"
-const makerURI = "maker"
+const makerChannel = "maker-channel";
+const makerURI = "maker";
 
 const makerProc = ryskSDK.execute(ryskSDK.connectArgs(makerChannel, makerURI));
+```
+
+### Disconnect
+
+```ts
+const makerChannel = "maker-channel";
+
+ryskSDK.execute(ryskSDK.disconnectArgs(makerChannel));
 ```
 
 ### Approve USDC spending
@@ -52,7 +59,7 @@ const makerProc = ryskSDK.execute(ryskSDK.connectArgs(makerChannel, makerURI));
 ```ts
 const chainId = 84532;
 const amount = "1000000";
-const rpcURL = "https://rpc..."
+const rpcURL = "https://rpc...";
 
 const proc = ryskSDK.execute(ryskSDK.approveArgs(chainId, amount, rpcURL));
 ```
@@ -78,7 +85,9 @@ const transferDetails: Transfer = {
   nonce: "some-unique-nonce",
 };
 
-const proc = ryskSDK.execute(ryskSDK.transferArgs(makerChannel, transferDetails));
+const proc = ryskSDK.execute(
+  ryskSDK.transferArgs(makerChannel, transferDetails)
+);
 ```
 
 ### List Positions
@@ -109,5 +118,7 @@ const quoteDetails: Quote = {
   validUntil: 1678886460,
 };
 
-const proc = ryskSDK.execute(ryskSDK.quoteArgs(makerChannel, request_id, quoteDetails));
+const proc = ryskSDK.execute(
+  ryskSDK.quoteArgs(makerChannel, request_id, quoteDetails)
+);
 ```
