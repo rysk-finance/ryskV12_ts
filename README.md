@@ -79,7 +79,7 @@ const proc = ryskSDK.execute(ryskSDK.balancesArgs(makerChannel, account));
 ```ts
 const makerChannel = "maker-channel";
 const transferDetails: Transfer = {
-  amout: "500000",
+  amount: "500000",
   asset: "0x...", // The asset address
   chain_id: 84532,
   is_deposit: true,

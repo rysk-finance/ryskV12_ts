@@ -34,7 +34,7 @@ export type QuoteNotification = {
 };
 
 export type Transfer = {
-  amout: string;
+  amount: string;
   asset: string;
   chain_id: number;
   is_deposit: boolean;
@@ -91,7 +91,7 @@ export function isTransfer(obj: any): obj is Transfer {
   return (
     typeof obj === "object" &&
     obj !== null &&
-    typeof obj.amout === "string" &&
+    typeof obj.amount === "string" &&
     typeof obj.asset === "string" &&
     typeof obj.chain_id === "number" &&
     typeof obj.isDeposit === "boolean" &&

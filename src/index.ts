@@ -83,7 +83,7 @@ class Rysk {
       "--asset",
       transfer.asset,
       "--amount",
-      transfer.amout,
+      transfer.amount,
       transfer.is_deposit ? "--is_deposit" : "",
       "--nonce",
       transfer.nonce,
