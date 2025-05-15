@@ -22,7 +22,7 @@ class EnvConfig implements EnvConfigPayload {
 const ENV_CONFIGS: { [key in Env]: EnvConfig } = {
   [Env.LOCAL]: new EnvConfig("ws://localhost:8000/"),
   [Env.TESTNET]: new EnvConfig("wss://rip-testnet.rysk.finance/"),
-  [Env.MAINNET]: new EnvConfig(""),
+  [Env.MAINNET]: new EnvConfig("wss://v12.rysk.finance/"),
 };
 
 class Rysk {
