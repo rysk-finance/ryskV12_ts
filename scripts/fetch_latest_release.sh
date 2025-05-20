@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Function to fetch the latest release from GitHub API
 get_latest_release() {
