@@ -1,11 +1,11 @@
-# Rysk V12 Typescript client
+# Rysk V12 Node client
 
 Node wrapper for ryskV12 cli
 
 ## Setup
 
-The package comes with a postinstall script that should automatically pull the [latest release of `ryskV12 cli`](https://github.com/rysk-finance/ryskV12-cli/releases/latest) if that is not the case please
-navigate to https://github.com/rysk-finance/ryskV12-cli/releases/latest and download the latest release in this directory as `ryskV12`.
+The package comes with a postinstall script that automatically pulls the [latest release of `ryskV12 cli`](https://github.com/rysk-finance/ryskV12-cli/releases/latest).
+If the script fails to do so please navigate to https://github.com/rysk-finance/ryskV12-cli/releases/latest and download the latest release in your project directory as `ryskV12`.
 
 ## Run
 
