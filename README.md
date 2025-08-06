@@ -164,6 +164,7 @@ const main = () => {
             quantity: result.quantity,
             strike: result.strike,
             validUntil: Math.ceil(Date.now() / 1000 + 30),
+            usd: result.usd,
           };
           let proc = sdk.execute(sdk.quoteArgs(makerChan, id, quote));
           proc.stdout.on("data", (d) => {

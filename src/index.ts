@@ -1,5 +1,92 @@
-import { spawn } from "child_process";
+import { ChildProcess, spawn } from "child_process";
+import { EventEmitter } from "events";
+import Stream from "stream";
+
 import { Quote, Transfer } from "./models";
+
+enum ReadyState {
+  CONNECTING = 0,
+  OPEN = 1,
+  CLOSING = 2,
+  CLOSED = 3,
+}
+class CliWebSocket extends EventEmitter {
+  private _childProcess: ChildProcess | null = null;
+  public readyState: ReadyState = ReadyState.CONNECTING;
+  public stdout: Stream.Readable | null;
+  public stderr: Stream.Readable | null;
+
+  // Constructor is private to enforce static factory method for clarity
+  constructor(childProcess: ChildProcess) {
+    super();
+    this._childProcess = childProcess;
+    this.readyState = ReadyState.OPEN; // The process is spawned, so it's "open" from this perspective
+    this.stdout = this._childProcess.stdout; // backwards compatibility
+    this.stderr = this._childProcess.stdout; // backwards compatibility
+
+    // Handle stdout data as "messages"
+    this._childProcess?.stdout?.on("data", (data: Buffer) => {
+      this.emit("message", data); // Assuming text messages
+    });
+
+    // Handle stderr as "errors"
+    this._childProcess?.stderr?.on("data", (data: Buffer) => {
+      this.emit("error", new Error(data.toString()));
+    });
+
+    // Handle process close
+    this._childProcess.on("close", (code: number, _: string) => {
+      this.readyState = ReadyState.CLOSED;
+      this.emit("close", code, "Process exited"); // Mimicking close event with code and reason
+    });
+
+    // Handle process error (e.g., spawn failure)
+    this._childProcess.on("error", (err: Error) => {
+      this.readyState = ReadyState.CLOSED;
+      this.emit("error", err.toString());
+      this.emit("close");
+    });
+
+    this.emit("open");
+  }
+
+  /**
+   * Closes the CLI process.
+   * @param _code Optional close code.
+   * @param reason Optional reason for closing.
+   */
+  public close(_code?: number, _reason?: string): void {
+    if (
+      this.readyState === ReadyState.CLOSING ||
+      this.readyState === ReadyState.CLOSED
+    ) {
+      return;
+    }
+    this.readyState = ReadyState.CLOSING;
+    this._childProcess?.kill("SIGTERM"); // Send termination signal
+    // The 'close' event listener will handle the state change to CLOSED
+  }
+
+  // Mimic WebSocket event handlers for convenience, though EventEmitter is primary
+  public onopen?: () => void;
+  public onmessage?: (msg: Buffer) => void;
+  public onclose?: () => void;
+  public onerror?: (event: Buffer) => void;
+
+  // Override emit to trigger on* handlers
+  public emit(eventName: string | symbol, ...args: any[]): boolean {
+    if (eventName === "open" && this.onopen) {
+      this.onopen();
+    } else if (eventName === "message" && this.onmessage) {
+      this.onmessage(args[0]);
+    } else if (eventName === "close" && this.onclose) {
+      this.onclose();
+    } else if (eventName === "error" && this.onerror) {
+      this.onerror(args[0]);
+    }
+    return super.emit(eventName, ...args);
+  }
+}
 
 export enum Env {
   LOCAL = 0,
@@ -41,10 +128,10 @@ class Rysk {
   }
 
   public execute(args: Array<string> = []) {
-    return spawn(this._cli_path, args, {
-      shell: true,
+    const childProcess = spawn(this._cli_path, args, {
       stdio: ["pipe", "pipe", "pipe"],
     });
+    return new CliWebSocket(childProcess);
   }
 
   public connectArgs(channelId: string, uri: string) {
@@ -52,7 +139,7 @@ class Rysk {
   }
 
   public disconnectArgs(channelId: string) {
-    return ["disconnect", "--channel_id", channelId]
+    return ["disconnect", "--channel_id", channelId];
   }
 
   public approveArgs(chainId: number, amount: string, rpcURL: string) {
@@ -84,11 +171,11 @@ class Rysk {
       transfer.asset,
       "--amount",
       transfer.amount,
-      transfer.is_deposit ? "--is_deposit" : "",
       "--nonce",
       transfer.nonce,
       "--private_key",
       this._private_key,
+      transfer.is_deposit ? "--is_deposit" : "",
     ];
   }
 
@@ -109,8 +196,6 @@ class Rysk {
       quote.chainId.toString(),
       "--expiry",
       quote.expiry.toString(),
-      quote.isPut ? "--is_put" : "",
-      quote.isTakerBuy ? "--is_taker_buy" : "",
       "--maker",
       quote.maker,
       "--nonce",
@@ -123,8 +208,12 @@ class Rysk {
       quote.strike,
       "--valid_until",
       quote.validUntil.toString(),
+      "--usd",
+      quote.usd,
       "--private_key",
       this._private_key,
+      quote.isPut ? "--is_put" : "",
+      quote.isTakerBuy ? "--is_taker_buy" : "",
     ];
   }
 }

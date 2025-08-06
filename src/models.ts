@@ -9,6 +9,7 @@ export type Request = {
   quantity: string;
   strike: string;
   taker: HexString;
+  usd: HexString;
 };
 
 export type Quote = {
@@ -23,6 +24,7 @@ export type Quote = {
   quantity: string;
   strike: string;
   validUntil: number;
+  usd: HexString;
 };
 
 export type QuoteNotification = {
@@ -62,7 +64,8 @@ export function isRequest(obj: any): obj is Request {
     typeof obj.isPut === "boolean" &&
     typeof obj.quantity === "string" &&
     typeof obj.strike === "string" &&
-    typeof obj.taker === "string"
+    typeof obj.taker === "string" &&
+    typeof obj.usd === "string"
   );
 }
 
@@ -82,7 +85,8 @@ export function isQuote(obj: any): obj is Quote {
     typeof obj.quantity === "string" &&
     typeof obj.signature === "string" &&
     typeof obj.strike === "string" &&
-    typeof obj.validUntil === "number"
+    typeof obj.validUntil === "number" &&
+    typeof obj.usd === "string"
   );
 }
 
