@@ -39,7 +39,6 @@ const main = () => {
             validUntil: Math.ceil(Date.now() / 1000 + 30),
             usd: result.usd,
           };
-          console.log(quote);
           let proc = sdk.execute(sdk.quoteArgs(makerChan, id, quote));
 
           proc.on("message", (d) => {
@@ -56,7 +55,7 @@ const main = () => {
     }
   };
 
-  const rfqChan = "BASE_WETH_CHAN";
+  const rfqChan = "HYPE_CHAN";
   const p = sdk.execute(
     sdk.connectArgs(rfqChan, "rfqs/0x5555555555555555555555555555555555555555")
   );
