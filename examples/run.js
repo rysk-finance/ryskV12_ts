@@ -4,14 +4,17 @@ import { isJSONRPCResponse, isRequest } from "ryskv12/models";
 const main = () => {
   const pk = process.env.RYSK_SDK_PK || "...";
   const maker = "0x...";
-  const sdk = new Rysk(Env.LOCAL, pk, "./ryskV12");
+  const sdk = new Rysk(Env.TESTNET, pk, "./ryskV12");
 
   const makerChan = "MAKER_CHAN";
   const makerProc = sdk.execute(sdk.connectArgs(makerChan, "maker"));
-  makerProc.stdout.on("data", (d) => {
-    console.log(d.toString());
+  makerProc.on("open", () => {
+    console.log("connected");
   });
-  makerProc.stderr.on("data", (d) => {
+  makerProc.onmessage = (d) => {
+    console.log(d.toString());
+  };
+  makerProc.on("error", (d) => {
     console.log(d.toString());
   });
 
@@ -34,12 +37,14 @@ const main = () => {
             quantity: result.quantity,
             strike: result.strike,
             validUntil: Math.ceil(Date.now() / 1000 + 30),
+            usd: result.usd,
           };
           let proc = sdk.execute(sdk.quoteArgs(makerChan, id, quote));
-          proc.stdout.on("data", (d) => {
+
+          proc.on("message", (d) => {
             console.log(d.toString());
           });
-          proc.stderr.on("data", (d) => {
+          proc.on("error", (d) => {
             console.log(d.toString());
           });
         }
@@ -50,10 +55,12 @@ const main = () => {
     }
   };
 
-  const rfqChan = "BASE_WETH_CHAN";
+  const rfqChan = "HYPE_CHAN";
   const p = sdk.execute(
-    sdk.connectArgs(rfqChan, "rfqs/0xb67bfa7b488df4f2efa874f4e59242e9130ae61f")
+    sdk.connectArgs(rfqChan, "rfqs/0x5555555555555555555555555555555555555555")
   );
 
-  p.stdout.on("data", rfqHandler);
+  p.onmessage = rfqHandler
 };
+
+main();
