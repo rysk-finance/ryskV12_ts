@@ -10,6 +10,7 @@ export type Request = {
   strike: string;
   taker: HexString;
   usd: HexString;
+  collateralAsset: HexString;
 };
 
 export type Quote = {
@@ -25,6 +26,7 @@ export type Quote = {
   strike: string;
   validUntil: number;
   usd: HexString;
+  collateralAsset: HexString;
 };
 
 export type QuoteNotification = {
@@ -36,8 +38,9 @@ export type QuoteNotification = {
 };
 
 export type Transfer = {
+  user: HexString;
   amount: string;
-  asset: string;
+  asset: HexString;
   chain_id: number;
   is_deposit: boolean;
   nonce: string;
@@ -65,7 +68,8 @@ export function isRequest(obj: any): obj is Request {
     typeof obj.quantity === "string" &&
     typeof obj.strike === "string" &&
     typeof obj.taker === "string" &&
-    typeof obj.usd === "string"
+    typeof obj.usd === "string" &&
+    typeof obj.collateralAsset === "string"
   );
 }
 
@@ -86,7 +90,8 @@ export function isQuote(obj: any): obj is Quote {
     typeof obj.signature === "string" &&
     typeof obj.strike === "string" &&
     typeof obj.validUntil === "number" &&
-    typeof obj.usd === "string"
+    typeof obj.usd === "string" &&
+    typeof obj.collateralAsset === "string"
   );
 }
 
@@ -95,6 +100,7 @@ export function isTransfer(obj: any): obj is Transfer {
   return (
     typeof obj === "object" &&
     obj !== null &&
+    typeof obj.user === "string" &&
     typeof obj.amount === "string" &&
     typeof obj.asset === "string" &&
     typeof obj.chain_id === "number" &&

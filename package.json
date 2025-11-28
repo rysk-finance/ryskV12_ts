@@ -41,5 +41,6 @@
     "build": "npx tsc",
     "upgrade": "yarn upgrade-interactive --latest",
     "postinstall": "chmod +x scripts/* && ./scripts/fetch_latest_release.sh"
-  }
+  },
+  "dependencies": {}
 }

@@ -1,4 +1,4 @@
-import { ChildProcess, spawn } from "child_process";
+import { ChildProcess, exec, spawn } from "child_process";
 import { EventEmitter } from "events";
 import Stream from "stream";
 
@@ -116,11 +116,32 @@ class Rysk {
   private _env: Env;
   private _cli_path: string;
   private _private_key: string;
+  private _minSdkVersion: string = "3.0.0";
 
   constructor(env: Env, privateKey: string, v12CliPath: string = "./ryskV12") {
     this._env = env;
     this._cli_path = v12CliPath;
     this._private_key = privateKey;
+    this._sdkVersionCheck();
+  }
+
+  private _sdkVersionCheck() {
+    exec([this._cli_path, "version"].join(" "), (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      switch (true) {
+        case stderr.includes("No help topic for 'version'"):
+        case !stdout:
+        case parseFloat(stdout.at(0)!) < parseFloat(this._minSdkVersion.at(0)!):
+          console.error(
+            `${this._cli_path} version too low: min ${this._minSdkVersion}.\nDownload it here https://github.com/rysk-finance/ryskV12-cli/releases/latest.`
+          );
+        default:
+          return;
+      }
+    });
   }
 
   private _url(uri: string): string {
@@ -167,6 +188,8 @@ class Rysk {
       channelId,
       "--chain_id",
       transfer.chain_id.toString(),
+      "--user",
+      transfer.user,
       "--asset",
       transfer.asset,
       "--amount",
@@ -210,6 +233,8 @@ class Rysk {
       quote.validUntil.toString(),
       "--usd",
       quote.usd,
+      "--collateral",
+      quote.collateralAsset,
       "--private_key",
       this._private_key,
       quote.isPut ? "--is_put" : "",
