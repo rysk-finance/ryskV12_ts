@@ -38,6 +38,7 @@ const main = () => {
             strike: result.strike,
             validUntil: Math.ceil(Date.now() / 1000 + 30),
             usd: result.usd,
+            collateralAsset: result.collateralAsset,
           };
           let proc = sdk.execute(sdk.quoteArgs(makerChan, id, quote));
 
@@ -60,7 +61,7 @@ const main = () => {
     sdk.connectArgs(rfqChan, "rfqs/0x5555555555555555555555555555555555555555")
   );
 
-  p.onmessage = rfqHandler
+  p.onmessage = rfqHandler;
 };
 
 main();

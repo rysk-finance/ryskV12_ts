@@ -1,6 +1,6 @@
 {
   "name": "ryskv12",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Rysk V12 client",
   "repository": "https://github.com/rysk-finance/ryskV12_ts.git",
   "homepage": "https://rysk.finance/",
@@ -41,5 +41,6 @@
     "build": "npx tsc",
     "upgrade": "yarn upgrade-interactive --latest",
     "postinstall": "chmod +x scripts/* && ./scripts/fetch_latest_release.sh"
-  }
+  },
+  "dependencies": {}
 }

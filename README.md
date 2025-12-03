@@ -117,6 +117,8 @@ const quoteDetails: Quote = {
   quantity: "1",
   strike: "1000000",
   validUntil: 1678886460,
+  usd: "0x...",
+  collateralAsset: "0x....",
 };
 
 const proc = ryskSDK.execute(
@@ -124,6 +126,6 @@ const proc = ryskSDK.execute(
 );
 ```
 
+## Example
 
-## Example 
 Check out the `examples` folder.
