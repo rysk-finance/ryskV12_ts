@@ -116,7 +116,7 @@ class Rysk {
   private _env: Env;
   private _cli_path: string;
   private _private_key: string;
-  private _minSdkVersion: string = "3.0.0";
+  private _minSdkVersion: string = "3.0.3";
 
   constructor(env: Env, privateKey: string, v12CliPath: string = "./ryskV12") {
     this._env = env;
@@ -136,7 +136,7 @@ class Rysk {
         case !stdout:
         case parseFloat(stdout.at(0)!) < parseFloat(this._minSdkVersion.at(0)!):
           console.error(
-            `${this._cli_path} version too low: min ${this._minSdkVersion}.\nDownload it here https://github.com/rysk-finance/ryskV12-cli/releases/latest.`
+            `${this._cli_path} version too low: min ${this._minSdkVersion}.\nDownload it here https://github.com/rysk-finance/ryskV12-cli/releases/latest.`,
           );
         default:
           return;
